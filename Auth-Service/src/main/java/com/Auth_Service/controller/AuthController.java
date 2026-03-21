@@ -24,14 +24,24 @@ public class AuthController {
         return service.login(req);
     }
 
+    // Step 1: Send OTP to email
     @PostMapping("/forgot-password")
     public String forgot(@RequestParam String email) {
         return service.forgotPassword(email);
     }
 
+    // Step 2: Verify OTP only (frontend uses this to unlock the password fields)
+    @PostMapping("/verify-otp")
+    public String verifyOtp(@RequestParam String email,
+                            @RequestParam String otp) {
+        return service.verifyOtp(email, otp);
+    }
+
+    // Step 3: Reset password (re-validates OTP + sets new password)
     @PostMapping("/reset-password")
-    public String reset(@RequestParam String token,
+    public String reset(@RequestParam String email,
+                        @RequestParam String otp,
                         @RequestParam String password) {
-        return service.resetPassword(token, password);
+        return service.resetPassword(email, otp, password);
     }
 }
