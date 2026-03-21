@@ -1,9 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
+import Navbar from './components/layout/Navbar';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App font-poppins text-slate-900 bg-slate-50 min-h-screen">
+      <Navbar />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
