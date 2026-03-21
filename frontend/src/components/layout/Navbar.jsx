@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../common/Button';
 import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
