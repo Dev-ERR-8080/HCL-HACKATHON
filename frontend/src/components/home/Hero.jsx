@@ -1,6 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const [location, setLocation] = useState('');
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guests, setGuests] = useState('1 Room, 2 Guests');
+
+  const handleSearch = () => {
+    navigate(`/hotels?location=${location}&guests=${guests}`);
+  };
+
   return (
     <div className="relative py-16 px-6 lg:py-24 bg-background font-poppins">
       <div className="max-w-7xl mx-auto text-center mb-12">
@@ -20,6 +31,8 @@ const Hero = () => {
             <label className="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">City</label>
             <input 
               type="text" 
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
               placeholder="Mumbai, Delhi, Bengaluru..." 
               className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none text-text"
             />
@@ -29,6 +42,8 @@ const Hero = () => {
             <label className="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Check-in</label>
             <input 
               type="date" 
+              value={checkIn}
+              onChange={(e) => setCheckIn(e.target.value)}
               className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none text-text"
             />
           </div>
@@ -37,21 +52,30 @@ const Hero = () => {
             <label className="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Check-out</label>
             <input 
               type="date" 
+              value={checkOut}
+              onChange={(e) => setCheckOut(e.target.value)}
               className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none text-text"
             />
           </div>
 
           <div className="p-3">
             <label className="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Guests</label>
-            <select className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none text-text appearance-none">
-              <option>1 Room, 2 Guests</option>
-              <option>1 Room, 1 Guest</option>
-              <option>2 Rooms, 4 Guests</option>
+            <select 
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none text-text appearance-none"
+            >
+              <option value="1 Room, 2 Guests">1 Room, 2 Guests</option>
+              <option value="1 Room, 1 Guest">1 Room, 1 Guest</option>
+              <option value="2 Rooms, 4 Guests">2 Rooms, 4 Guests</option>
             </select>
           </div>
 
           <div className="p-3 flex items-center lg:items-end">
-            <button className="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95 text-lg">
+            <button 
+              onClick={handleSearch}
+              className="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-md hover:bg-blue-700 transition-all active:scale-95 text-lg"
+            >
               Search
             </button>
           </div>
