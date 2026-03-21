@@ -1,11 +1,26 @@
 import React from 'react';
-import Button from '../common/Button';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const HotelCard = ({ hotel }) => {
+const HotelCard = ({ hotel, compact = false }) => {
+  const navigate = useNavigate();
+  const locationObj = useLocation();
+  
+  const handleClick = () => {
+    // Attempt to grab current search parameters if available from parent page
+    const params = new URLSearchParams(locationObj.search || '');
+    const checkIn = params.get('checkIn') || '';
+    const checkOut = params.get('checkOut') || '';
+    const guests = params.get('guests') || '1 Room, 2 Guests';
+
+    navigate('/hotel-details', { state: { hotel, checkIn, checkOut, guests } });
+  };
   return (
-    <div className="bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col md:flex-row group">
+    <div 
+      onClick={handleClick}
+      className={`bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col ${compact ? '' : 'md:flex-row'} group cursor-pointer`}
+    >
       {/* LEFT: Image */}
-      <div className="md:w-1/3 relative overflow-hidden">
+      <div className={`${compact ? 'w-full h-48' : 'md:w-1/3 relative'} overflow-hidden`}>
         <img 
           src={hotel.image} 
           alt={hotel.name} 
@@ -42,22 +57,18 @@ const HotelCard = ({ hotel }) => {
         </div>
       </div>
 
-      {/* RIGHT: Pricing & Action */}
-      <div className="p-6 md:border-l border-slate-100 bg-slate-50/50 flex flex-col justify-between md:min-w-[200px] shrink-0">
+      {/* RIGHT: Pricing */}
+      <div className={`p-6 ${compact ? '' : 'md:border-l'} border-slate-100 bg-slate-50/50 flex flex-col justify-center ${compact ? 'items-start' : 'items-end md:min-w-[200px]'} shrink-0`}>
         <div>
-          <div className="flex items-center gap-2 mb-1 justify-end md:justify-start">
+          <div className={`flex items-center gap-2 mb-1 ${compact ? 'justify-start' : 'justify-end md:justify-start'}`}>
             {hotel.oldPrice && <span className="text-slate-400 line-through text-sm">₹{hotel.oldPrice}</span>}
           </div>
-          <div className="flex items-baseline gap-1 justify-end md:justify-start">
+          <div className={`flex items-baseline gap-1 ${compact ? 'justify-start' : 'justify-end md:justify-start'}`}>
             <span className="text-2xl font-bold text-slate-800">₹{hotel.price}</span>
             <span className="text-slate-500 text-sm">/ night</span>
           </div>
-          <p className="text-xs text-slate-500 mt-1 text-right md:text-left">+ Taxes & fees</p>
+          <p className={`text-xs text-slate-500 mt-1 ${compact ? 'text-left' : 'text-right md:text-left'}`}>+ Taxes & fees</p>
         </div>
-        
-        <Button className="mt-6 w-full py-3 shadow-md hover:-translate-y-0.5 transition-transform" onClick={() => console.log('Book', hotel.id)}>
-          Book Now
-        </Button>
       </div>
     </div>
   );

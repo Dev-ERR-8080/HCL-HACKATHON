@@ -3,6 +3,8 @@ import { AuthProvider } from './context/AuthContext';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Hotels from './pages/Hotels';
+import HotelDetails from './pages/HotelDetails';
+import Checkout from './pages/Checkout';
 import AuthModal from './components/auth/AuthModal';
 
 function App() {
@@ -13,6 +15,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/hotels" element={<Hotels />} />
+          <Route path="/hotel-details" element={<HotelDetails />} />
+          <Route path="/checkout" element={<Checkout />} />
         </Routes>
       </div>
     </AuthProvider>
