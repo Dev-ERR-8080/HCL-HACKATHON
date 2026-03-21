@@ -24,11 +24,12 @@ public class BookingController {
     ) {
         boolean available = bookingService.isRoomAvailable(
                 roomId,
-                LocalDate.parse(checkIn),
-                LocalDate.parse(checkOut)
+                LocalDate.parse(checkIn.trim()),
+                LocalDate.parse(checkOut.trim())
         );
         return ResponseEntity.ok(available);
     }
+
     @PostMapping("/create")
     public ResponseEntity<Booking> createBooking(
             @RequestParam Long userId,
