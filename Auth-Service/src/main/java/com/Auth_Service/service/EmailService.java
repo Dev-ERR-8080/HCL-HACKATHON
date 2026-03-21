@@ -11,15 +11,18 @@ public class EmailService {
     @Autowired
     private JavaMailSender sender;
 
-    public void sendResetEmail(String to, String token) {
-
-        String link = "http://localhost:3000/reset-password?token=" + token;
-
+    public void sendOtpEmail(String to, String otp) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(to);
-        msg.setSubject("Reset Password");
-        msg.setText("Click here: " + link);
-
+        msg.setSubject("QuickInn - Your Password Reset OTP");
+        msg.setText(
+                "Hello,\n\n" +
+                        "Your OTP for resetting your QuickInn password is:\n\n" +
+                        "  " + otp + "\n\n" +
+                        "This OTP is valid for 10 minutes. Do not share it with anyone.\n\n" +
+                        "If you did not request this, please ignore this email.\n\n" +
+                        "- QuickInn Team"
+        );
         sender.send(msg);
     }
 }
