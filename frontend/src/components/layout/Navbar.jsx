@@ -26,9 +26,8 @@ const Navbar = () => {
     };
 
     return (
-<<<<<<< HEAD
-        <nav className="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-white/80 backdrop-blur-md border-b border-slate-200 font-poppins">
-            <div className="text-2xl font-bold text-primary tracking-tight">
+        <nav className="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-white/80 backdrop-blur-md border-b border-slate-200 font-poppins text-text">
+            <div className="text-2xl font-bold text-primary tracking-tight cursor-pointer" onClick={() => navigate('/')}>
                 QuickInn
             </div>
 
@@ -73,35 +72,6 @@ const Navbar = () => {
                     </button>
                 )}
             </div>
-=======
-        <nav className="sticky top-0 z-50 flex justify-between items-center px-6 py-4 bg-white/80 backdrop-blur-md border-b border-slate-200 font-poppins text-text">
-      <div className="text-2xl font-bold text-primary tracking-tight cursor-pointer">
-        QuickInn
-      </div>
-      
-      <div className="flex items-center gap-4">
-        {isAuthenticated ? (
-          <div className="flex items-center gap-6">
-            <span className="text-secondary font-medium hidden sm:inline">
-              Hi, {user?.name || 'User'}
-            </span>
-            <button 
-              onClick={logout} 
-              className="text-secondary font-medium hover:text-primary transition-colors"
-            >
-              Log out
-            </button>
-          </div>
-        ) : (
-          <button 
-            onClick={openAuthModal}
-            className="bg-primary text-white px-6 py-2 rounded-xl font-medium shadow-md hover:bg-blue-700 transition-all active:scale-95"
-          >
-            Sign In
-          </button>
-        )}
-      </div>
->>>>>>> c160f4e (feat: Implement hotel details page with gallery, info, and booking card components, and enhance the booking confirmation UI.)
 
       {/* Mobile Menu Button */}
       <div className="md:hidden flex items-center">
