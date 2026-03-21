@@ -1,0 +1,19 @@
+package org.example.hotelcatalogservice.DTO;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class HotelSearchResponse {
+
+    private Long hotelId;
+    private String name;
+    private String city;
+    private Double rating;
+    private List<String> amenities;
+}
