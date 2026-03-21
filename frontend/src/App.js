@@ -6,6 +6,7 @@ import Hotels from './pages/Hotels';
 import HotelDetails from './pages/HotelDetails';
 import Checkout from './pages/Checkout';
 import MyBookings from './pages/MyBookings';
+import Confirmation from './pages/Confirmation';
 import AuthModal from './components/auth/AuthModal';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/hotels" element={<Hotels />} />
           <Route path="/hotel-details" element={<HotelDetails />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/confirmation" element={<Confirmation />} />
           <Route path="/my-bookings" element={<MyBookings />} />
         </Routes>
       </div>

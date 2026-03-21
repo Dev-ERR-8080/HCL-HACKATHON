@@ -77,8 +77,8 @@ const Checkout = () => {
     setErrors({});
     // Success flow
     console.log("Booking proceeding...", { hotel, formData, checkIn, checkOut, nights });
-    // Navigate to confirmation (just a placeholder redirect here or could be built next)
-    navigate('/confirmation', { state: { bookingRef: Math.floor(Math.random() * 1000000), hotel } });
+    // Navigate to confirmation
+    navigate('/confirmation', { state: { hotel } });
   };
 
   const subtotal = hotel.price * nights;

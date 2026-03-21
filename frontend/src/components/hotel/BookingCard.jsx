@@ -1,8 +1,8 @@
 import React from 'react';
 
-const BookingCard = ({ price, rating }) => {
+const BookingCard = ({ price, rating, onBook }) => {
   return (
-    <div className="sticky top-24 bg-white p-6 rounded-3xl shadow-xl border border-slate-100 font-poppins">
+    <div className="sticky top-24 bg-white p-6 rounded-xl shadow-md border border-slate-100 font-poppins">
       <div className="flex justify-between items-end mb-6">
         <div>
           <span className="text-3xl font-bold text-text">₹{price}</span>
@@ -36,8 +36,8 @@ const BookingCard = ({ price, rating }) => {
       </div>
 
       <button 
-        className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all active:scale-95 mb-4"
-        onClick={() => window.location.href = '/confirmation'}
+        className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-md hover:bg-blue-700 transition-all active:scale-95 mb-4"
+        onClick={onBook}
       >
         Book Now
       </button>
