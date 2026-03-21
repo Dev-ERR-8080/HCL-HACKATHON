@@ -7,9 +7,46 @@ const Hero = () => {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState('1 Room, 2 Guests');
+  const [errors, setErrors] = useState({ city: "", checkIn: "", checkOut: "" });
 
   const handleSearch = () => {
-    navigate(`/hotels?location=${location}&guests=${guests}`);
+    let isValid = true;
+    const newErrors = { city: "", checkIn: "", checkOut: "" };
+
+    if (!location.trim()) {
+      newErrors.city = "Please enter a city";
+      isValid = false;
+    }
+
+    if (checkIn) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const checkInDate = new Date(checkIn);
+      checkInDate.setHours(0, 0, 0, 0);
+
+      if (checkInDate < today) {
+        newErrors.checkIn = "Check-in date cannot be in the past";
+        isValid = false;
+      }
+    }
+
+    if (checkIn && checkOut) {
+      const checkInDate = new Date(checkIn);
+      const checkOutDate = new Date(checkOut);
+      checkInDate.setHours(0, 0, 0, 0);
+      checkOutDate.setHours(0, 0, 0, 0);
+
+      if (checkOutDate <= checkInDate) {
+        newErrors.checkOut = "Check-out must be after check-in date";
+        isValid = false;
+      }
+    }
+
+    setErrors(newErrors);
+
+    if (isValid) {
+      navigate(`/hotels?location=${location}&guests=${guests}`);
+    }
   };
 
   return (
@@ -32,10 +69,14 @@ const Hero = () => {
             <input 
               type="text" 
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={(e) => {
+                setLocation(e.target.value);
+                if (errors.city) setErrors({...errors, city: ""});
+              }}
               placeholder="Mumbai, Delhi, Bengaluru..." 
-              className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none text-text"
+              className={`w-full px-4 py-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-primary outline-none text-text ${errors.city ? 'border border-red-500' : 'border-none'}`}
             />
+            {errors.city && <div className="text-red-500 text-sm mt-1 ml-1">{errors.city}</div>}
           </div>
 
           <div className="p-3">
@@ -43,9 +84,13 @@ const Hero = () => {
             <input 
               type="date" 
               value={checkIn}
-              onChange={(e) => setCheckIn(e.target.value)}
-              className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none text-text"
+              onChange={(e) => {
+                setCheckIn(e.target.value);
+                if (errors.checkIn) setErrors({...errors, checkIn: ""});
+              }}
+              className={`w-full px-4 py-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-primary outline-none text-text ${errors.checkIn ? 'border border-red-500' : 'border-none'}`}
             />
+            {errors.checkIn && <div className="text-red-500 text-sm mt-1 ml-1">{errors.checkIn}</div>}
           </div>
 
           <div className="p-3">
@@ -53,9 +98,13 @@ const Hero = () => {
             <input 
               type="date" 
               value={checkOut}
-              onChange={(e) => setCheckOut(e.target.value)}
-              className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none text-text"
+              onChange={(e) => {
+                setCheckOut(e.target.value);
+                if (errors.checkOut) setErrors({...errors, checkOut: ""});
+              }}
+              className={`w-full px-4 py-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-primary outline-none text-text ${errors.checkOut ? 'border border-red-500' : 'border-none'}`}
             />
+            {errors.checkOut && <div className="text-red-500 text-sm mt-1 ml-1">{errors.checkOut}</div>}
           </div>
 
           <div className="p-3">
