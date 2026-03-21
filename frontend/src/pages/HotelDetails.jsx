@@ -24,17 +24,25 @@ const HotelDetails = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background font-poppins">
+    <div className="min-h-screen flex flex-col bg-background font-poppins text-text selection:bg-primary/10">
       <Navbar />
       
-      <main className="max-w-7xl mx-auto p-6 md:p-8 flex-grow w-full">
+      <main className="max-w-7xl mx-auto p-6 md:p-8 flex-grow w-full mt-4">
         {/* Gallery Section */}
-        <Gallery images={hotel.images || [hotel.image, hotel.image, hotel.image, hotel.image, hotel.image].filter(Boolean)} />
+        <div className="mb-10">
+          <Gallery images={hotel.images || [
+            hotel.image, 
+            "https://images.unsplash.com/photo-1582719478250-c89cae4df85b?auto=format&fit=crop&w=400&q=80",
+            "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=400&q=80",
+            "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=400&q=80",
+            "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=400&q=80"
+          ].filter(Boolean)} />
+        </div>
 
         {/* Content Section: Split Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 mb-16 items-start">
           {/* Left Column: Info & Amenities */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 text-left">
             <HotelInfo 
               name={hotel.name}
               rating={hotel.rating}
@@ -46,16 +54,20 @@ const HotelDetails = () => {
 
           {/* Right Column: Sticky Booking Card */}
           <div className="lg:col-span-1">
-            <BookingCard 
-              price={hotel.price}
-              rating={hotel.rating}
-              onBook={handleBookNow}
-            />
+            <div className="sticky top-28">
+              <BookingCard 
+                price={hotel.price}
+                rating={hotel.rating}
+                onBook={handleBookNow}
+              />
+            </div>
           </div>
         </div>
 
         {/* Similar Stays Section */}
-        <SimilarStays />
+        <div className="border-t border-slate-100 pt-16">
+          <SimilarStays />
+        </div>
       </main>
 
       <Footer />
