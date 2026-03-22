@@ -1,26 +1,24 @@
 package org.example.hotelcatalogservice.Services;
 
+import lombok.RequiredArgsConstructor;
 import org.example.hotelcatalogservice.DTO.HotelSearchRequest;
 import org.example.hotelcatalogservice.DTO.HotelSearchResponse;
 import org.example.hotelcatalogservice.DTO.HotelSearchResult;
 import org.example.hotelcatalogservice.Entity.Hotel;
 import org.example.hotelcatalogservice.Repository.HotelAmenityRepository;
 import org.example.hotelcatalogservice.Repository.HotelSearchRepository;
-import org.example.hotelcatalogservice.Repository.RoomRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor // ✅ FIXED: replaced manual constructor (which accepted RoomRepository
+//    but never assigned it — silent dead code) with Lombok @RequiredArgsConstructor
 public class HotelSearchService {
 
     private final HotelSearchRepository hotelSearchRepository;
     private final HotelAmenityRepository hotelAmenityRepository;
-
-    public HotelSearchService(HotelSearchRepository hotelSearchRepository, HotelAmenityRepository hotelAmenityRepository, RoomRepository roomRepository) {
-        this.hotelSearchRepository = hotelSearchRepository;
-        this.hotelAmenityRepository = hotelAmenityRepository;
-    }
+    // RoomRepository removed — it was injected but never used in this service
 
     public HotelSearchResult searchHotels(HotelSearchRequest request) {
 
@@ -35,7 +33,6 @@ public class HotelSearchService {
 
             List<String> amenities = hotelAmenityRepository
                     .findAmenitiesByHotelId(hotel.getHotelId());
-
 
             return new HotelSearchResponse(
                     hotel.getHotelId(),

@@ -18,8 +18,10 @@ public class ProfileService {
     private ProfileRepository profileRepo;
 
     public UserProfile save(String email, ProfileRequest req) {
-
-        User user = userRepo.findByEmail(email).orElseThrow();
+        // ✅ email is passed in from the controller, which reads it from the
+        //    X-User-Email header injected by the gateway — no JWT parsing needed here
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found for email: " + email));
 
         UserProfile profile = profileRepo.findByUser(user)
                 .orElse(new UserProfile());
@@ -33,5 +35,14 @@ public class ProfileService {
         profile.setCountry(req.getCountry());
 
         return profileRepo.save(profile);
+    }
+
+    public UserProfile get(String email) {
+        // ✅ Convenience method for GET /profile endpoint
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found for email: " + email));
+
+        return profileRepo.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Profile not yet created for this user"));
     }
 }

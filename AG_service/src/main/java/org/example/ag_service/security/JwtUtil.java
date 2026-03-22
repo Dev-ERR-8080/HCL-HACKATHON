@@ -14,6 +14,7 @@ public class JwtUtil {
 
     private final Key key;
 
+    // ✅ Secret injected from application.properties — must match auth-service jwt.secret
     public JwtUtil(@Value("${jwt.secret}") String secret) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }

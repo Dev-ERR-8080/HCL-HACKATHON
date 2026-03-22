@@ -3,9 +3,11 @@ package org.example.bookingservice.repository;
 import org.example.bookingservice.entity.RoomAvailability;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface RoomAvailabilityRepository extends JpaRepository<RoomAvailability, Long> {
@@ -17,9 +19,12 @@ public interface RoomAvailabilityRepository extends JpaRepository<RoomAvailabili
         AND r.isAvailable = false
     """)
     long countUnavailableDates(
-            Long roomId,
-            LocalDate startDate,
-            LocalDate endDate
+            @Param("roomId") Long roomId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 
+    // ✅ ADDED: replaces the broken findAll().stream().filter() in cancelBooking
+    //    — fetches only rows for the given booking, not the entire table
+    List<RoomAvailability> findByBookingId(Long bookingId);
 }

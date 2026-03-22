@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "hotels")
@@ -34,4 +35,9 @@ public class Hotel {
     private Double rating;
 
     private LocalDateTime createdAt;
+
+    // ✅ ADDED: required for the JPQL "JOIN h.roomTypes rt" in HotelSearchRepository.
+    //    Without this relationship, the JPQL query throws a "could not resolve property" error.
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
+    private List<RoomType> roomTypes;
 }

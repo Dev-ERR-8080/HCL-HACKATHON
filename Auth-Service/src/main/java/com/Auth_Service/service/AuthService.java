@@ -40,34 +40,33 @@ public class AuthService {
         user.setName(req.getName());
         user.setEmail(req.getEmail());
         user.setPassword(encoder.encode(req.getPassword()));
+        user.setRole("USER"); // ✅ always set a default role on registration
         userRepo.save(user);
         return "Registered successfully";
     }
 
     public String login(LoginRequest req) {
-        // Check if email exists first
         User user = userRepo.findByEmail(req.getEmail())
                 .orElseThrow(() -> new RuntimeException("No account found with this email"));
 
-        // Then check password
         if (!encoder.matches(req.getPassword(), user.getPassword()))
             throw new RuntimeException("Incorrect password. Please try again.");
 
-        return jwt.generateToken(user.getEmail());
+        // ✅ FIXED: updated to new 3-arg signature — passes userId and role
+        //    so the gateway filter can extract X-User-Id and X-User-Role headers
+        return jwt.generateToken(user.getEmail(), user.getId(), user.getRole());
     }
 
     public String forgotPassword(String email) {
-        // Validate email format simply
         if (email == null || !email.contains("@"))
             throw new RuntimeException("Please enter a valid email address");
 
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("No account found with this email address"));
 
-        // Generate 6-digit OTP
         String otp = String.format("%06d", new Random().nextInt(999999));
 
-        // Delete any existing OTP for this user
+        // Delete any existing OTP for this user before saving a new one
         tokenRepo.findByUser(user).ifPresent(tokenRepo::delete);
 
         PasswordResetToken t = new PasswordResetToken();

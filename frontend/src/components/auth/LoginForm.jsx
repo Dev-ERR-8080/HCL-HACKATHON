@@ -22,8 +22,11 @@ const LoginForm = ({ setView }) => {
         setIsLoading(true);
 
         try {
-            const token = await loginUser({ email, password });
-            login(token); // saves token to context + localStorage, closes modal
+            // ✅ FIXED: loginUser now returns the email string (not a JWT token).
+            //    The JWT is set as an HttpOnly cookie by the backend.
+            //    We pass the email to login() so AuthContext can set the display name.
+            const userEmail = await loginUser({ email, password });
+            login(userEmail);
         } catch (err) {
             setError(err.message || "Login failed. Please try again.");
         } finally {
@@ -75,6 +78,7 @@ const LoginForm = ({ setView }) => {
                 <p className="mx-4 mb-0 text-center text-sm font-semibold text-slate-400">OR</p>
             </div>
 
+            {/* ✅ Google OAuth still works — backend sets cookie and redirects to / */}
             <Button
                 variant="secondary"
                 onClick={() => window.location.href = "http://localhost:8080/oauth2/authorization/google"}

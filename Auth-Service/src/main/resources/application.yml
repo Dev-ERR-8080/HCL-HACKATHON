@@ -1,8 +1,14 @@
+server:
+  port: 8081   # ← change to whatever port your auth service uses
+
 spring:
+  application:
+    name: auth-service   # ✅ required for Eureka registration
+
   datasource:
     url: jdbc:mysql://localhost:3306/auth_db
     username: root
-    password: 3737
+    password: Reddy@2003PP
 
   jpa:
     hibernate:
@@ -28,3 +34,17 @@ spring:
             scope:
               - email
               - profile
+
+# ✅ JWT secret — must match exactly with gateway's jwt.secret
+jwt:
+  secret: mysecretkeymysecretkeymysecretkey12   # 32+ chars required for HS256
+
+# ✅ Eureka client config — registers this service with Eureka server
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true

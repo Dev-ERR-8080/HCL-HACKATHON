@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "room_types")
 @Data
@@ -20,9 +22,14 @@ public class RoomType {
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
-    private String typeName; // Deluxe, Suite
+    private String typeName;
 
     private String description;
 
     private Integer maxOccupancy;
+
+    // ✅ ADDED: required for the JPQL "JOIN rt.rooms r" in HotelSearchRepository.
+    //    Without this, the JPQL query cannot traverse from RoomType to Room.
+    @OneToMany(mappedBy = "roomType", fetch = FetchType.LAZY)
+    private List<Room> rooms;
 }

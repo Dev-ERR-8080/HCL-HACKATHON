@@ -11,10 +11,13 @@ import java.util.List;
 @Repository
 public interface HotelSearchRepository extends JpaRepository<Hotel, Long> {
 
+    // ✅ FIXED: original query used "JOIN RoomType rt ON rt.hotel = h" and
+    //    "JOIN Room r ON r.roomType = rt" — this is SQL syntax, not JPQL.
+    //    JPQL joins must traverse JPA relationships, not ON clauses.
     @Query("""
         SELECT DISTINCT h FROM Hotel h
-        JOIN RoomType rt ON rt.hotel = h
-        JOIN Room r ON r.roomType = rt
+        JOIN h.roomTypes rt
+        JOIN rt.rooms r
         WHERE (:city IS NULL OR LOWER(h.city) = LOWER(:city))
         AND (:minPrice IS NULL OR r.pricePerNight >= :minPrice)
         AND (:maxPrice IS NULL OR r.pricePerNight <= :maxPrice)

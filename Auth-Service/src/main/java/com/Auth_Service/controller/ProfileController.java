@@ -1,6 +1,5 @@
 package com.Auth_Service.controller;
 
-import com.Auth_Service.config.JwtUtil;
 import com.Auth_Service.dto.ProfileRequest;
 import com.Auth_Service.entity.UserProfile;
 import com.Auth_Service.service.ProfileService;
@@ -8,21 +7,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/api/profile")  // ✅ FIXED: was "/profile" — must match gateway route
 public class ProfileController {
 
     @Autowired
     private ProfileService service;
 
-    @Autowired
-    private JwtUtil jwt;
-
+    // ✅ FIXED: removed JwtUtil dependency entirely.
+    //    The gateway already validated the JWT and injected X-User-Email header.
+    //    Reading email directly from the header is simpler and correct.
     @PostMapping
     public UserProfile save(
-            @RequestHeader("Authorization") String token,
+            @RequestHeader("X-User-Email") String email,
             @RequestBody ProfileRequest req) {
-
-        String email = jwt.extractEmail(token.replace("Bearer ", ""));
         return service.save(email, req);
+    }
+
+    // ✅ ADDED: GET profile endpoint that ProfileService.get() now supports
+    @GetMapping
+    public UserProfile get(
+            @RequestHeader("X-User-Email") String email) {
+        return service.get(email);
     }
 }

@@ -19,4 +19,6 @@ public class User {
     private String password;
 
     private String provider = "LOCAL";
+
+    private String role = "USER";
 }

@@ -1,66 +1,58 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { logoutUser } from '../services/api';
 
 const AuthContext = createContext();
 
-// Decode JWT payload without any library (JWT is base64 encoded)
-const decodeToken = (token) => {
-    try {
-        const payload = token.split('.')[1];
-        const decoded = JSON.parse(atob(payload));
-        return decoded;
-    } catch {
-        return null;
-    }
-};
-
-// Extract a display name from email e.g. "vishnu.reddy@gmail.com" → "Vishnu Reddy"
 const getNameFromEmail = (email) => {
     if (!email) return 'User';
-    const localPart = email.split('@')[0];           // "vishnu.reddy" or "vishnureddy"
+    const localPart = email.split('@')[0];
     return localPart
-        .replace(/[._\-]/g, ' ')                        // replace dots/underscores/dashes with space
-        .replace(/\b\w/g, c => c.toUpperCase());        // capitalize each word
+        .replace(/[._\-]/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase());
 };
 
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(null);
-    const [user, setUser] = useState(null); // { email, name }
+    // ✅ FIXED: removed all token/localStorage logic.
+    //    Auth is now cookie-based — the browser handles the JWT cookie automatically.
+    //    We only store the user display info (email + name) in state.
+    const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-    // Load token from localStorage on mount
+    // ✅ On mount, check if user is already logged in by calling /api/auth/me
+    //    If the cookie is valid the backend returns the user's email.
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        if (storedToken) {
-            const decoded = decodeToken(storedToken);
-            if (decoded) {
-                setToken(storedToken);
-                setIsAuthenticated(true);
-                setUser({
-                    email: decoded.sub,
-                    name: getNameFromEmail(decoded.sub),
+        const checkSession = async () => {
+            try {
+                const res = await fetch('http://localhost:8080/api/auth/me', {
+                    credentials: 'include', // send the JWT cookie
                 });
+                if (res.ok) {
+                    const email = await res.text();
+                    setIsAuthenticated(true);
+                    setUser({ email, name: getNameFromEmail(email) });
+                }
+            } catch {
+                // Not logged in — silently ignore
             }
-        }
+        };
+        checkSession();
     }, []);
 
-    const login = (newToken) => {
-        const decoded = decodeToken(newToken);
-        setToken(newToken);
+    // ✅ FIXED: login no longer takes a token — it just sets user state.
+    //    The cookie was already set by the backend /api/auth/login response.
+    const login = (email) => {
         setIsAuthenticated(true);
-        setUser({
-            email: decoded?.sub || '',
-            name: getNameFromEmail(decoded?.sub),
-        });
-        localStorage.setItem('token', newToken);
+        setUser({ email, name: getNameFromEmail(email) });
         setIsAuthModalOpen(false);
     };
 
-    const logout = () => {
-        setToken(null);
+    const logout = async () => {
+        try {
+            await logoutUser(); // calls POST /api/auth/logout to clear the cookie
+        } catch { /* ignore */ }
         setUser(null);
         setIsAuthenticated(false);
-        localStorage.removeItem('token');
     };
 
     const openAuthModal = () => setIsAuthModalOpen(true);
@@ -68,7 +60,6 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{
-            token,
             user,
             isAuthenticated,
             login,

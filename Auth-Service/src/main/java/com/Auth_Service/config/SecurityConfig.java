@@ -7,11 +7,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -31,8 +26,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
+                // ✅ FIXED: CORS must only be configured in ONE place — the Gateway's
+                //    GatewayCorsConfig.java. Having it here AND in the gateway causes
+                //    the header to be written twice, which browsers reject with:
+                //    "Access-Control-Allow-Origin contains multiple values"
                 .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
@@ -53,6 +51,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
 }
