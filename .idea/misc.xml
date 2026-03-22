@@ -9,10 +9,17 @@
         <option value="$PROJECT_DIR$/hotel-catalog-service/pom.xml" />
         <option value="$PROJECT_DIR$/BookingService/pom.xml" />
         <option value="$PROJECT_DIR$/HotelCatalogService/pom.xml" />
+        <option value="$PROJECT_DIR$/Api-Gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/AG_service/pom.xml" />
+        <option value="$PROJECT_DIR$/IC_service/pom.xml" />
+        <option value="$PROJECT_DIR$/Auth-Service/pom.xml" />
+        <option value="$PROJECT_DIR$/Eureka-Server/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/Api-Gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/Eureka-Server/pom.xml" />
         <option value="$PROJECT_DIR$/Hotel-catalog-service/pom.xml" />
       </set>
     </option>
