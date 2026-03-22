@@ -3,6 +3,12 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="AG_service" />
+      </profile>
       <profile name="Annotation profile for hotel-catalog-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -11,21 +17,38 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.44/lombok-1.18.44.jar" />
         </processorPath>
         <module name="hotel-catalog-service" />
+        <module name="Auth-Service" />
+      </profile>
+      <profile name="Annotation profile for IC_service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
+        </processorPath>
+        <module name="IC_service" />
         <module name="BookingService" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="api-gateway" target="21" />
       <module name="backend" target="17" />
       <module name="catalog service" target="17" />
+      <module name="eureka-server" target="21" />
       <module name="Hotel-catalog-service" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="AG_service" options="-parameters" />
+      <module name="Auth-Service" options="-parameters" />
       <module name="BookingService" options="-parameters" />
       <module name="Hotel-catalog-service" options="-parameters" />
+      <module name="IC_service" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
       <module name="backend" options="-parameters" />
       <module name="catalog service" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
       <module name="hotel-catalog-service" options="-parameters" />
     </option>
   </component>
