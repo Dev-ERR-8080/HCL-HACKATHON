@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface RoomAvailabilityRepository extends JpaRepository<RoomAvailability, Long> {
 
+    // ✅ JPQL uses the Java field name "r.date" — not the column name "availability_date"
     @Query("""
         SELECT COUNT(r) FROM RoomAvailability r
         WHERE r.roomId = :roomId
@@ -24,7 +25,5 @@ public interface RoomAvailabilityRepository extends JpaRepository<RoomAvailabili
             @Param("endDate") LocalDate endDate
     );
 
-    // ✅ ADDED: replaces the broken findAll().stream().filter() in cancelBooking
-    //    — fetches only rows for the given booking, not the entire table
     List<RoomAvailability> findByBookingId(Long bookingId);
 }

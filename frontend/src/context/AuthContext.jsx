@@ -12,35 +12,34 @@ const getNameFromEmail = (email) => {
 };
 
 export const AuthProvider = ({ children }) => {
-    // ✅ FIXED: removed all token/localStorage logic.
-    //    Auth is now cookie-based — the browser handles the JWT cookie automatically.
-    //    We only store the user display info (email + name) in state.
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    // ✅ ADDED: loading state — prevents UI flash of "not logged in" before session check completes
+    const [isLoading, setIsLoading] = useState(true);
 
-    // ✅ On mount, check if user is already logged in by calling /api/auth/me
-    //    If the cookie is valid the backend returns the user's email.
     useEffect(() => {
         const checkSession = async () => {
             try {
                 const res = await fetch('http://localhost:8080/api/auth/me', {
-                    credentials: 'include', // send the JWT cookie
+                    credentials: 'include',
                 });
                 if (res.ok) {
                     const email = await res.text();
                     setIsAuthenticated(true);
                     setUser({ email, name: getNameFromEmail(email) });
                 }
+                // ✅ 401 = not logged in (normal), 503 = service starting up
+                // Both are expected — silently ignore, don't log to console
             } catch {
-                // Not logged in — silently ignore
+                // Network error — service may not be up yet, ignore silently
+            } finally {
+                setIsLoading(false); // ✅ always clear loading state
             }
         };
         checkSession();
     }, []);
 
-    // ✅ FIXED: login no longer takes a token — it just sets user state.
-    //    The cookie was already set by the backend /api/auth/login response.
     const login = (email) => {
         setIsAuthenticated(true);
         setUser({ email, name: getNameFromEmail(email) });
@@ -49,7 +48,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await logoutUser(); // calls POST /api/auth/logout to clear the cookie
+            await logoutUser();
         } catch { /* ignore */ }
         setUser(null);
         setIsAuthenticated(false);
@@ -62,6 +61,7 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider value={{
             user,
             isAuthenticated,
+            isLoading,  // ✅ expose so pages can show spinner while checking session
             login,
             logout,
             isAuthModalOpen,

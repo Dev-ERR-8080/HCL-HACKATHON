@@ -2,7 +2,6 @@ package com.Auth_Service.config;
 
 import com.Auth_Service.entity.User;
 import com.Auth_Service.repository.UserRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,33 +27,30 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                         Authentication auth) throws IOException {
 
         OAuth2User user = (OAuth2User) auth.getPrincipal();
-
         String email = user.getAttribute("email");
         String name  = user.getAttribute("name");
 
-        // 🔍 Find or create user in DB
         User db = repo.findByEmail(email).orElseGet(() -> {
             User u = new User();
             u.setEmail(email);
             u.setName(name);
             u.setProvider("GOOGLE");
-            u.setRole("USER"); // ✅ make sure your User entity has a role field
+            u.setRole("USER");
             return repo.save(u);
         });
 
-        // ✅ FIXED: generateToken now takes userId and role
         String token = jwt.generateToken(db.getEmail(), db.getId(), db.getRole());
 
-        // ✅ FIXED: send JWT as HttpOnly cookie instead of exposing it in the URL
-        Cookie jwtCookie = new Cookie("JWT", token);
-        jwtCookie.setHttpOnly(true);   // not accessible via JS — protects against XSS
-        jwtCookie.setPath("/");        // available across all paths
-        jwtCookie.setMaxAge(86400);    // 1 day (matches token expiry)
-        // jwtCookie.setSecure(true);  // ← uncomment in production (HTTPS only)
+        // ✅ FIXED: Set-Cookie header with SameSite=Lax manually because
+        //    Jakarta's Cookie API has no SameSite support.
+        //    SameSite=Lax is required so the browser keeps the cookie when
+        //    Spring redirects from auth-service (8081) → frontend (3000).
+        String cookieHeader = String.format(
+                "JWT=%s; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax",
+                token
+        );
+        res.addHeader("Set-Cookie", cookieHeader);
 
-        res.addCookie(jwtCookie);
-
-        // ✅ Redirect to frontend without token in URL
         res.sendRedirect("http://localhost:3000");
     }
 }

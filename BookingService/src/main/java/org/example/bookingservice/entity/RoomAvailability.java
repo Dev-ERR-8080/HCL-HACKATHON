@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
 @Table(
         name = "room_availability",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"room_id", "date"})
+                // ✅ FIXED: "date" is a reserved keyword in MySQL — using "availability_date" instead.
+                //    Without this fix, Hibernate throws a SQL syntax error on table creation
+                //    which causes the booking service to crash on startup with a 500.
+                @UniqueConstraint(columnNames = {"room_id", "availability_date"})
         }
 )
 @Data
@@ -24,19 +27,19 @@ public class RoomAvailability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🔹 Room Reference (from Catalog Service)
+    @Column(name = "room_id")
     private Long roomId;
 
-    // 🔹 Date for which availability is tracked
+    // ✅ FIXED: renamed column from "date" (reserved word) to "availability_date"
+    @Column(name = "availability_date")
     private LocalDate date;
 
-    // 🔹 Availability Status
+    @Column(name = "is_available")
     private Boolean isAvailable;
 
-    // 🔹 Booking Reference (optional but powerful)
+    @Column(name = "booking_id")
     private Long bookingId;
 
-    // 🔹 Audit Fields
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
